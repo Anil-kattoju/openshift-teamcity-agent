@@ -1,0 +1,36 @@
+#!/bin/bash
+# This is a simple build script and will be executed on your CI system if 
+# available.  Otherwise it will execute while your application is stopped
+# before the deploy step.  This script gets executed directly, so it
+# could be python, php, ruby, etc.
+
+TEMPLATES_DIR=${OPENSHIFT_REPO_DIR}/.openshift/templates
+INSTALL_DIR=${OPENSHIFT_HOMEDIR}app-root/runtime
+
+TEAMCITY_NAME="buildAgent"
+TEAMCITY_URL="https://raw.github.com/Kissy/openshift-teamcity-agent/update/${TEAMCITY_NAME}.zip"
+
+function build_teamcity()
+{
+	cd ${INSTALL_DIR}
+	echo "Downloading ${TEAMCITY_NAME} from ${TEAMCITY_URL}"
+	wget -q ${TEAMCITY_URL}
+	unzip  ${TEAMCITY_NAME}.zip
+
+	rm ${INSTALL_DIR}/conf/buildAgent.properties
+	erb ${TEMPLATES_DIR}/buildAgent.properties.erb > ${INSTALL_DIR}/conf/buildAgent.properties
+
+	rm ${TEAMCITY_NAME}.zip
+}
+
+function check_and_install_teamcity()
+{
+	if [[ ! -e ${INSTALL_DIR}/bin/agent.sh ]]; then
+		echo "setting up teamcity agent"
+		build_teamcity
+	else
+		echo "An installation already exists. Delete and recreate the application."
+	fi
+}
+
+check_and_install_teamcity

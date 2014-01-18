@@ -1,0 +1,9 @@
+#!/bin/bash
+# The logic to stop your application should be put in this script.
+
+INSTALL_DIR=${OPENSHIFT_HOMEDIR}app-root/runtime
+
+echo "Stopping teamcity agent."
+${INSTALL_DIR}/bin/agent.sh stop
+
+exit 0

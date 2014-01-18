@@ -1,0 +1,9 @@
+#!/bin/bash
+# The logic to start up your application should be put in this
+# script. The application will work only if it binds to
+# $OPENSHIFT_INTERNAL_IP:8080
+
+INSTALL_DIR=${OPENSHIFT_HOMEDIR}app-root/runtime
+
+echo "Starting teamcity agent."
+nohup ${INSTALL_DIR}/bin/agent.sh start
