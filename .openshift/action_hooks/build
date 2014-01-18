@@ -7,20 +7,19 @@
 TEMPLATES_DIR=${OPENSHIFT_REPO_DIR}/.openshift/templates
 INSTALL_DIR=${OPENSHIFT_HOMEDIR}app-root/runtime
 
-TEAMCITY_NAME="buildAgent"
-TEAMCITY_URL="https://raw.github.com/Kissy/openshift-teamcity-agent/update/${TEAMCITY_NAME}.zip"
+TEAMCITY_AGENT_NAME="buildAgent"
+TEAMCITY_AGENT_URL=${OPENSHIFT_REPO_DIR}/update/${TEAMCITY_AGENT_NAME}.zip
 
 function build_teamcity()
 {
 	cd ${INSTALL_DIR}
-	echo "Downloading ${TEAMCITY_NAME} from ${TEAMCITY_URL}"
-	wget -q ${TEAMCITY_URL}
-	unzip  ${TEAMCITY_NAME}.zip
+	echo "Unzip ${TEAMCITY_AGENT_NAME} from ${TEAMCITY_AGENT_URL}"
+	unzip -q ${TEAMCITY_AGENT_NAME}.zip
 
-	rm ${INSTALL_DIR}/conf/buildAgent.properties
+	rm ${INSTALL_DIR}/conf/buildAgent.dist.properties ${INSTALL_DIR}/conf/buildAgent.properties
 	erb ${TEMPLATES_DIR}/buildAgent.properties.erb > ${INSTALL_DIR}/conf/buildAgent.properties
 
-	rm ${TEAMCITY_NAME}.zip
+	rm ${TEAMCITY_AGENT_NAME}.zip
 }
 
 function check_and_install_teamcity()
